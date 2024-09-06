@@ -27,7 +27,7 @@
                 <!-- Plus Symbol Column -->
             </Grid.ColumnDefinitions>
 
-            <Label Text="My Stocks"
+            <Label Text="My Stock"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    FontSize="24"
