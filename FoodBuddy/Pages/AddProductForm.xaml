@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodBuddy.Pages.AddProductForm"
+             Title="Add New Product"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Product Name -->
+            <Label Text="Product Name:" />
+            <Entry x:Name="ProductNameEntry" Placeholder="Enter product name" />
+
+            <!-- Food Group -->
+            <Label Text="Food Group:" />
+            <Entry x:Name="FoodGroupEntry" Placeholder="Enter food group" />
+
+            <!-- Food Type -->
+            <Label Text="Food Type:" />
+            <Entry x:Name="FoodTypeEntry" Placeholder="Enter food type" />
+
+            <!-- Package Type (Radio Buttons) -->
+            <Label Text="Package Type:" />
+            <StackLayout Orientation="Horizontal">
+                <RadioButton x:Name="PrepackagedRadioButton" Content="Prepackaged" GroupName="PackageTypeGroup" IsChecked="{Binding PackageType}" CheckedChanged="OnPackageTypeChanged"/>
+                <RadioButton x:Name="CustomRadioButton" Content="Custom" GroupName="PackageTypeGroup" IsChecked="{Binding PackageType, Converter={StaticResource InverseBoolConverter}}" CheckedChanged="OnPackageTypeChanged"/>
+            </StackLayout>
+
+            <!-- Quantity Type (Radio Buttons) -->
+            <Label Text="Quantity Type:" />
+            <StackLayout Orientation="Horizontal">
+                <RadioButton x:Name="GramsRadioButton" Content="Grams" GroupName="QuantityTypeGroup" IsChecked="{Binding QuantityType, Converter={StaticResource InverseBoolConverter}}"/>
+                <RadioButton x:Name="MlRadioButton" Content="Ml" GroupName="QuantityTypeGroup" IsChecked="{Binding QuantityType}"/>
+            </StackLayout>
+
+            <!-- Quantity -->
+            <Label Text="Quantity:" />
+            <Entry x:Name="QuantityEntry" Placeholder="Only available for Prepackaged Products" Keyboard="Numeric" IsEnabled="False" TextColor="Gray"/>
+
+            <!-- Average Use By Time -->
+            <Label Text="Average Use By Time (days):" />
+            <Entry x:Name="AverageUseByTimeEntry" Placeholder="Enter days" Keyboard="Numeric"/>
+
+            <!-- Submit Button -->
+            <Button Text="Add Product"
+                    BackgroundColor="Green"
+                    TextColor="White"
+                    Clicked="OnAddProductClicked" />
+
+            <!-- Cancel Button -->
+            <Button Text="Cancel"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="OnCancelClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

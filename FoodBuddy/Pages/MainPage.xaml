@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodBuddy.Pages.MainPage"
+             BackgroundColor="White">
+
+    <!-- Main Grid Layout -->
+    <Grid>
+        <!-- Top Section (Title) -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Centered Title -->
+        <Label Text="My Dashboard"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               FontSize="24"
+               Grid.Row="0"
+               Padding="20,40,20,20"/>
+
+        <!-- Content Section (Box with clickable options) -->
+        <StackLayout Grid.Row="1"
+                     Padding="20,0"
+                     Spacing="20"
+                     HorizontalOptions="Center"
+                     VerticalOptions="CenterAndExpand">
+
+            <!-- Home Option -->
+            <Button Text="Home"
+                    WidthRequest="200"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="10"/>
+
+            <!-- Products Option -->
+            <Button Text="Products"
+                    WidthRequest="200"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="10"/>
+
+            <!-- Stock Option -->
+            <Button Text="Stock"
+                    WidthRequest="200"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="10"/>
+
+            <!-- Settings Option -->
+            <Button Text="Settings"
+                    WidthRequest="200"
+                    BackgroundColor="LightGray"
+                    TextColor="Black"
+                    CornerRadius="10"
+                    Clicked="OnSettingsClicked" />
+
+        </StackLayout>
+      
+    </Grid>
+</ContentPage>

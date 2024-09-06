@@ -1,0 +1,121 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodBuddy.Pages.MyStockPage"
+             BackgroundColor="White"
+             Title="My Stock">
+
+    <!-- Main Grid Layout with 4 Rows -->
+    <Grid>
+        <!-- Define Rows -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Top Bar -->
+            <RowDefinition Height="1" />
+            <!-- Grey Line -->
+            <RowDefinition Height="*" />
+            <!-- Content Area -->
+            <RowDefinition Height="Auto" />
+            <!-- Bottom Navigation -->
+        </Grid.RowDefinitions>
+
+        <!-- Top Bar with Title and Plus Symbol -->
+        <Grid Grid.Row="0" BackgroundColor="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Title Column -->
+                <ColumnDefinition Width="Auto" />
+                <!-- Plus Symbol Column -->
+            </Grid.ColumnDefinitions>
+
+            <Label Text="My Stock"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="24"
+                   Grid.Column="0"
+                   Padding="20,40,20,20"/>
+
+            <Button Text="+"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    FontSize="40"
+                    TextColor="Black"
+                    BackgroundColor="Transparent"
+                    Padding="0,15,25,0"
+                    Grid.Column="1"
+                    Clicked="OnAddStockClicked"/>
+        </Grid>
+
+        <!-- Grey Line -->
+        <BoxView Grid.Row="1" HeightRequest="1" Color="Gray" HorizontalOptions="FillAndExpand" />
+
+        <!-- Content Area -->
+        <ScrollView Grid.Row="2" Padding="20,10">
+            <VerticalStackLayout Spacing="20"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Start">
+                <!-- Simple Stock List -->
+                <CollectionView ItemsSource="{Binding StockItems}"
+                                SelectionMode="None"
+                                VerticalOptions="Start">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="LightGray"
+                                   Padding="10"
+                                   CornerRadius="10"
+                                   Margin="0,10,0,10">
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <!-- First row for Product Name and Quantity -->
+                                        <RowDefinition Height="Auto" />
+                                        <!-- Second row for Purchase Date -->
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Name aligned left -->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!-- Quantity aligned right -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Product Name in the first row, first column -->
+                                    <Label Text="{Binding Product.ProductName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       Grid.Column="0" 
+                                       Grid.Row="0"
+                                       HorizontalOptions="Start" />
+
+                                    <!-- Quantity in the first row, second column, aligned right -->
+                                    <Label Text="{Binding Quantity}"
+                                       FontSize="16"
+                                       Grid.Column="1" 
+                                       Grid.Row="0"
+                                       HorizontalOptions="End" />               
+
+                                    <!-- Purchase Date on the second row -->
+                                    <Label Text="{Binding PurchaseDate, StringFormat='{}{0:dd/MM/yyyy}'}"
+                                       FontSize="14"
+                                       TextColor="Gray"
+                                       Grid.ColumnSpan="2" 
+                                       Grid.Row="1"
+                                       HorizontalOptions="Start" />
+                                </Grid>
+
+
+
+
+
+
+
+
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+       
+    </Grid>
+</ContentPage>

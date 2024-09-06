@@ -1,0 +1,65 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodBuddy.Pages.ProductDetailPage"
+             Title="Product Details">
+    <ScrollView>
+        <Grid Padding="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Content Section -->
+            <StackLayout Grid.Row="0" Spacing="20">
+                <Label Text="Product Name:"  />
+                <Entry Text="{Binding ProductName}" IsReadOnly="False"/>
+
+                <Label Text="Food Group:"  />
+                <Entry Text="{Binding FoodGroup}" IsReadOnly="False"/>
+
+                <Label Text="Food Type:"  />
+                <Entry Text="{Binding FoodType}" IsReadOnly="False"/>
+
+                <!-- Package Type (Uneditable Text) -->
+                <Label Text="Package Type:" FontSize="18" />
+                <Label >
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding PackageType}" Value="True">
+                            <Setter Property="Text" Value="Prepackaged"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding PackageType}" Value="False">
+                            <Setter Property="Text" Value="Custom"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <!-- Quantity Type (Uneditable Text) -->
+                <Label Text="Quantity Type:" />
+                <Label >
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding QuantityType}" Value="True">
+                            <Setter Property="Text" Value="Ml"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding QuantityType}" Value="False">
+                            <Setter Property="Text" Value="Grams"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <!-- Quantity -->
+                <Label Text="Quantity:" />
+                <Entry x:Name="QuantityEntry" Text="{Binding Quantity}" Placeholder="Only available for Prepackaged Products" IsEnabled="False" TextColor="Gray" Keyboard="Numeric"/>
+
+                <!-- Average Use By Time -->
+                <Label Text="Average Use By Time (days):" />
+                <Entry Text="{Binding AverageUseByTime}" Placeholder="Enter days" Keyboard="Numeric"/>
+            </StackLayout>
+
+            <!-- Buttons Section -->
+            <StackLayout Grid.Row="1" Orientation="Horizontal" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" Spacing="20" Margin="0,20,0,0">
+                <Button Text="Save" HorizontalOptions="EndAndExpand" Clicked="OnSaveClicked"/>
+                <Button Text="Delete" HorizontalOptions="StartAndExpand" TextColor="White" Clicked="OnDeleteClicked"/>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,107 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="FoodBuddy.Pages.MyProductsPage"
+             BackgroundColor="White"
+             Title="My Products">
+
+    <!-- Main Grid Layout with 4 Rows -->
+    <Grid>
+        <!-- Define Rows -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Top Bar -->
+            <RowDefinition Height="1" />
+            <!-- Grey Line -->
+            <RowDefinition Height="*" />
+            <!-- Content Area -->
+            <RowDefinition Height="Auto" />
+            <!-- Bottom Navigation -->
+        </Grid.RowDefinitions>
+
+        <!-- Top Bar with Title and Plus Symbol -->
+        <Grid Grid.Row="0" BackgroundColor="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Title Column -->
+                <ColumnDefinition Width="Auto" />
+                <!-- Plus Symbol Column -->
+            </Grid.ColumnDefinitions>
+
+            <Label Text="My Products"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="24"
+                   Grid.Column="0"
+                   Padding="20,40,20,20"/>
+
+            <Button Text="+"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    FontSize="40"
+                    TextColor="Black"
+                    BackgroundColor="Transparent"
+                    Padding="0,15,25,0"
+                    Grid.Column="1"
+                    Clicked="OnAddProductClicked"/>
+        </Grid>
+
+        <!-- Grey Line -->
+        <BoxView Grid.Row="1" HeightRequest="1" Color="Gray" HorizontalOptions="FillAndExpand" />
+
+        <!-- Content Area -->
+        <ScrollView Grid.Row="2" Padding="20,10">
+            <VerticalStackLayout Spacing="20"
+                                 HorizontalOptions="Fill"
+                                 VerticalOptions="Start">
+                <!-- Grouped CollectionView -->
+                <CollectionView ItemsSource="{Binding FoodGroups}"
+                                SelectionMode="None"
+                                VerticalOptions="Start">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Single Frame to enclose Header and Content -->
+                            <Frame Margin="0,10,0,10"
+                                   Padding="0"
+                                   BackgroundColor="LightGray"
+                                   CornerRadius="10">
+                                <toolkit:Expander>
+                                    <!-- Food Group Header -->
+                                    <toolkit:Expander.Header>
+                                        <Label Text="{Binding GroupName}" 
+                                               FontSize="18"
+                                               Padding="10"/>
+                                    </toolkit:Expander.Header>
+
+                                    <!-- Products List -->
+                                    <toolkit:Expander.Content>
+                                        <VerticalStackLayout Spacing="5"
+                                                             Padding="10,0,10,10">
+                                            <CollectionView ItemsSource="{Binding Products}">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame BackgroundColor="White"
+                                                               Padding="10"
+                                                               CornerRadius="5"
+                                                               Margin="0,5,0,0">
+                                                            <Label Text="{Binding ProductName}">
+                                                                <Label.GestureRecognizers>
+                                                                    <TapGestureRecognizer Tapped="OnProductTappedHandler" />
+                                                                </Label.GestureRecognizers>
+                                                            </Label>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </VerticalStackLayout>
+                                    </toolkit:Expander.Content>
+                                </toolkit:Expander>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+  
+    </Grid>
+</ContentPage>
