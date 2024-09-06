@@ -24,13 +24,13 @@
             <Label Text="Package Type:" />
             <StackLayout Orientation="Horizontal">
                 <RadioButton x:Name="PrepackagedRadioButton" Content="Prepackaged" GroupName="PackageTypeGroup" IsChecked="{Binding PackageType}" CheckedChanged="OnPackageTypeChanged"/>
-                <RadioButton x:Name="CustomRadioButton" Content="Custom" GroupName="PackageTypeGroup" IsChecked="{Binding PackageType, Converter={StaticResource InverseBoolConverter}}" CheckedChanged="OnPackageTypeChanged"/>
+                <RadioButton x:Name="CustomRadioButton" Content="Custom" GroupName="PackageTypeGroup" IsChecked="{Binding PackageType}" CheckedChanged="OnPackageTypeChanged"/>
             </StackLayout>
 
             <!-- Quantity Type (Radio Buttons) -->
             <Label Text="Quantity Type:" />
             <StackLayout Orientation="Horizontal">
-                <RadioButton x:Name="GramsRadioButton" Content="Grams" GroupName="QuantityTypeGroup" IsChecked="{Binding QuantityType, Converter={StaticResource InverseBoolConverter}}"/>
+                <RadioButton x:Name="GramsRadioButton" Content="Grams" GroupName="QuantityTypeGroup" IsChecked="{Binding QuantityType}"/>
                 <RadioButton x:Name="MlRadioButton" Content="Ml" GroupName="QuantityTypeGroup" IsChecked="{Binding QuantityType}"/>
             </StackLayout>
 

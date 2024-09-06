@@ -25,6 +25,9 @@
 
 		<!-- Suppress platform-specific API warnings for non-Android platforms -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- Add linker options to prevent unnecessary code stripping -->
+		<MauiLinkerOptions>--link sdk</MauiLinkerOptions>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -61,7 +64,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\AddStockForm.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\MealsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -76,7 +79,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Pages\Settings.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 

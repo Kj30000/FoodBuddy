@@ -29,9 +29,10 @@ namespace FoodBuddy.Models // Namespace for organizing related classes
         public event PropertyChangedEventHandler? PropertyChanged;
 
         // Method to raise the PropertyChanged event. CallerMemberName automatically uses the name of the property calling this method.
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // Notify that a specific property has changed
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }
