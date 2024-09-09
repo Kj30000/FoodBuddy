@@ -66,6 +66,12 @@
 		<MauiXaml Update="Pages\AddStockForm.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Pages\Backend\FoodGroupDatabase.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\Backend\ProductDatabase.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Pages\MealsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

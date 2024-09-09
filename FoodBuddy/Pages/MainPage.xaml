@@ -36,18 +36,20 @@
                     CornerRadius="10"/>
 
             <!-- Products Option -->
-            <Button Text="Products"
+            <Button Text="Foodgroup Database"
                     WidthRequest="200"
                     BackgroundColor="LightGray"
                     TextColor="Black"
-                    CornerRadius="10"/>
+                    CornerRadius="10"
+                    Clicked="OnFoodGroupDatabaseClicked"/>
 
-            <!-- Stock Option -->
-            <Button Text="Stock"
+            <!-- Product Database Option -->
+            <Button Text="Product Database"
                     WidthRequest="200"
                     BackgroundColor="LightGray"
                     TextColor="Black"
-                    CornerRadius="10"/>
+                    CornerRadius="10"
+                    Clicked="OnProductDatabaseClicked" />
 
             <!-- Settings Option -->
             <Button Text="Settings"

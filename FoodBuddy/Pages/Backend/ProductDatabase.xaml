@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FoodBuddy.Pages.Backend.ProductDatabase"
+             Title="Product Database"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Product Database" FontSize="Large" HorizontalOptions="Center" />
+
+            <!-- Header Row -->
+            <Grid ColumnDefinitions="*,*,*"
+                  Padding="10" RowSpacing="10" ColumnSpacing="10">
+                <Label Text="Product Name" FontAttributes="Bold" />
+                <Label Text="Food Type" FontAttributes="Bold" Grid.Column="1" />
+                <Label Text="Food Group" FontAttributes="Bold" Grid.Column="2" />
+            </Grid>
+
+            <!-- Products ListView -->
+            <ListView x:Name="ProductsListView" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid ColumnDefinitions="*,*,*" Padding="10">
+                                <Label Text="{Binding ProductName}" />
+                                <Label Text="{Binding FoodType}" Grid.Column="1" />
+                                <Label Text="{Binding FoodGroup}" Grid.Column="2" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Close Button -->
+            <Button Text="Close" BackgroundColor="Red" TextColor="White" Clicked="OnCloseClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

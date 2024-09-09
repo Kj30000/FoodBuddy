@@ -26,7 +26,17 @@
 
             <!-- Food Type -->
             <Label Text="Food Type:" />
-            <Entry x:Name="FoodTypeEntry" Placeholder="Enter food type" />
+            <Picker x:Name="FoodTypePicker"
+                ItemsSource="{Binding FilteredFoodTypes}" 
+                ItemDisplayBinding="{Binding Name}"
+                IsEnabled="False"
+                SelectedIndexChanged="OnFoodTypeSelected" />
+
+            <!-- Custom Food Type Entry (Initially Hidden) -->
+            <Entry x:Name="CustomFoodTypeEntry"
+                Placeholder="Enter new food type"
+                IsVisible="False" />
+
 
             <!-- Package Type (Radio Buttons) -->
             <Label Text="Package Type:" />

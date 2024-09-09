@@ -9,6 +9,8 @@ namespace FoodBuddy.Pages
 
         // Use ObservableCollection for dynamic updates
         public ObservableCollection<FoodGroup> AllFoodGroups { get; set; } = new ObservableCollection<FoodGroup>();
+        public ObservableCollection<FoodType> FilteredFoodTypes { get; set; } = new ObservableCollection<FoodType>();
+
 
         public AddProductForm()
         {
@@ -39,29 +41,74 @@ namespace FoodBuddy.Pages
         }
 
 
+        // Picker Logic - Food Group and Food Type--------------------------------------------
 
-        // Handle Picker selection
-        private void OnFoodGroupSelected(object sender, EventArgs e)
+        // Handle Picker selection of Food Groups & Load Food Types for FoodType Picker. 
+        private async void OnFoodGroupSelected(object sender, EventArgs e)
         {
             var selectedFoodGroup = FoodGroupPicker.SelectedItem as FoodGroup;
 
-            if (selectedFoodGroup?.Name == "Add New")
+            if (selectedFoodGroup != null)
             {
-                CustomFoodGroupEntry.IsVisible = true;  // Show custom entry
+                // Load Food Types for the selected Food Group
+                var foodTypes = await App.Database.GetFoodTypesByGroupAsync(selectedFoodGroup.Id);
+
+                // Clear and update the FilteredFoodTypes collection
+                FilteredFoodTypes.Clear();
+                foreach (var foodType in foodTypes)
+                {
+                    FilteredFoodTypes.Add(foodType);
+                }
+
+                // Add the "Add New" option to the end of the list
+                FilteredFoodTypes.Add(new FoodType { Name = "Add New" });
+
+                // Enable the FoodTypePicker since a Food Group is selected
+                FoodTypePicker.IsEnabled = true;
+
+                // Hide or show the custom entry field for new food groups
+                CustomFoodGroupEntry.IsVisible = selectedFoodGroup.Name == "Add New";
             }
             else
             {
-                CustomFoodGroupEntry.IsVisible = false;  // Hide custom entry
+                // Disable FoodTypePicker if no valid FoodGroup is selected
+                FoodTypePicker.IsEnabled = false;
             }
         }
 
+
+        // Handle Picker selection of Food Types
+        private void OnFoodTypeSelected(object sender, EventArgs e)
+        {
+            var selectedFoodType = FoodTypePicker.SelectedItem as FoodType;
+
+            if (selectedFoodType?.Name == "Add New")
+            {
+                CustomFoodTypeEntry.IsVisible = true;  // Show custom food type entry
+            }
+            else
+            {
+                CustomFoodTypeEntry.IsVisible = false;  // Hide custom entry
+            }
+        }
+
+
+        // PACKAGETYPE & QUANTITY TYPE LOGIC
+
+
+
+
+
+
+        // Function to handle the "Add Product" button click event (Once saved)
         private async void OnAddProductClicked(object sender, EventArgs e)
         {
             string productName = ProductNameEntry.Text;
             var selectedFoodGroup = FoodGroupPicker.SelectedItem as FoodGroup;
+            var selectedFoodType = FoodTypePicker.SelectedItem as FoodType;
             string foodGroupName = selectedFoodGroup?.Name;
 
-            // If "Add New" is selected, create a new FoodGroup entry
+            // If "Add New" is selected for food group
             if (foodGroupName == "Add New")
             {
                 foodGroupName = CustomFoodGroupEntry.Text;
@@ -70,6 +117,9 @@ namespace FoodBuddy.Pages
                 {
                     var newFoodGroup = new FoodGroup { Name = foodGroupName };
                     await App.Database.SaveFoodGroupAsync(newFoodGroup);  // Save new food group to the database
+
+                    // Retrieve the saved FoodGroup's ID
+                    selectedFoodGroup = newFoodGroup; // Update the selectedFoodGroup to use the newly created one
 
                     // Reload the food groups to include the newly added one
                     LoadFoodGroupsFromDatabase();
@@ -81,11 +131,40 @@ namespace FoodBuddy.Pages
                 }
             }
 
-            string foodType = FoodTypeEntry.Text;  // For now, we'll keep this simple.
+            // Check if the user is adding a new food type
+            string foodTypeName = selectedFoodType?.Name;
+            if (foodTypeName == "Add New")
+            {
+                foodTypeName = CustomFoodTypeEntry.Text;
+
+                if (!string.IsNullOrWhiteSpace(foodTypeName))
+                {
+                    var newFoodType = new FoodType
+                    {
+                        Name = foodTypeName,
+                        FoodGroupId = selectedFoodGroup.Id // Ensure the new FoodType links to the new FoodGroup
+                    };
+                    await App.Database.SaveFoodTypeAsync(newFoodType);  // Save new food type to the database
+
+                    // Reload the food types to include the newly added one
+                    var foodTypes = await App.Database.GetFoodTypesByGroupAsync(selectedFoodGroup.Id);
+                    FilteredFoodTypes.Clear();
+                    foreach (var foodType in foodTypes)
+                    {
+                        FilteredFoodTypes.Add(foodType);
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Please enter a valid Food Type name.", "OK");
+                    return;
+                }
+            }
+
             bool packageType = PrepackagedRadioButton.IsChecked;
             bool quantityType = MlRadioButton.IsChecked;
 
-            if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(foodGroupName) || string.IsNullOrWhiteSpace(foodType))
+            if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(foodGroupName) || string.IsNullOrWhiteSpace(foodTypeName))
             {
                 await DisplayAlert("Missing Information", "Please fill out all fields.", "OK");
                 return;
@@ -109,7 +188,7 @@ namespace FoodBuddy.Pages
             {
                 ProductName = productName,
                 FoodGroup = foodGroupName,
-                FoodType = foodType,
+                FoodType = foodTypeName,  // Use selected or newly added FoodType's name
                 PackageType = packageType,
                 QuantityType = quantityType,
                 Quantity = quantity,
@@ -127,6 +206,14 @@ namespace FoodBuddy.Pages
 
             await Navigation.PopModalAsync();
         }
+
+
+
+
+
+
+
+
 
         // Handle package type changes
         private void OnPackageTypeChanged(object sender, CheckedChangedEventArgs e)

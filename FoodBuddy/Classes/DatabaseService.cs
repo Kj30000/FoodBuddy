@@ -235,6 +235,13 @@ namespace FoodBuddy.Services
             return foodGroups;
         }
 
+        // Add method to retrieve all FoodTypes from the database
+        public Task<List<FoodType>> GetFoodTypesAsync()
+        {
+            return _database.Table<FoodType>().ToListAsync();
+        }
+
+        // Add method to retrieve FoodTypes by FoodGroupId
         public Task<List<FoodType>> GetFoodTypesByGroupAsync(int foodGroupId)
         {
             return _database.Table<FoodType>().Where(ft => ft.FoodGroupId == foodGroupId).ToListAsync();
@@ -251,6 +258,19 @@ namespace FoodBuddy.Services
             else
             {
                 return _database.InsertAsync(foodGroup); // Insert new FoodGroup
+            }
+        }
+
+        // Save a new Food Type to the database
+        public Task<int> SaveFoodTypeAsync(FoodType foodType)
+        {
+            if (foodType.Id != 0)
+            {
+                return _database.UpdateAsync(foodType); // Update existing FoodType
+            }
+            else
+            {
+                return _database.InsertAsync(foodType); // Insert new FoodType
             }
         }
 

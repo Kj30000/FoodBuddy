@@ -15,20 +15,14 @@ namespace FoodBuddy.Pages
             // Home button - No action needed if this is the home page
         }
 
-        private void OnProductsClicked(object sender, EventArgs e)
+        private async void OnFoodGroupDatabaseClicked(object sender, EventArgs e)
         {
-            if (Application.Current != null)
-            {
-                Application.Current.MainPage = new NavigationPage(new MyProductsPage()); // Navigate to Products page wrapped in a NavigationPage
-            }
+            await Navigation.PushAsync(new Backend.FoodGroupDatabase()); // Navigate to the Food Group Database page
         }
 
-        private void OnStockClicked(object sender, EventArgs e)
+        private async void OnProductDatabaseClicked(object sender, EventArgs e)
         {
-            if (Application.Current != null)
-            {
-                Application.Current.MainPage = new NavigationPage(new MyStockPage()); // Navigate to Stock page wrapped in a NavigationPage
-            }
+            await Navigation.PushAsync(new Backend.ProductDatabase()); // Navigate to the Product Database page
         }
 
         private void OnMealsClicked(object sender, EventArgs e)
