@@ -15,10 +15,11 @@
             <!-- Food Group -->
             <Label Text="Food Group:" />
             <Picker x:Name="FoodGroupPicker"
-                    ItemsSource="{Binding AllFoodGroups}"
-                    SelectedIndexChanged="OnFoodGroupSelected" />
+                ItemsSource="{Binding AllFoodGroups}" 
+                ItemDisplayBinding="{Binding Name}"
+                SelectedIndexChanged="OnFoodGroupSelected" />
 
-            <!-- Custom Food Group Entry (Initially Hidden) -->
+                <!-- Custom Food Group Entry (Initially Hidden) -->
             <Entry x:Name="CustomFoodGroupEntry"
                    Placeholder="Enter new food group"
                    IsVisible="False" />

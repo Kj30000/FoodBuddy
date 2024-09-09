@@ -12,24 +12,31 @@ namespace FoodBuddy.Services
 
 
 
+        // Database Initialization ------------------------------------------------------------------------------------
         // Constructor initializes the database connection and creates necessary tables
+
         public DatabaseService(string dbPath)
         {
             _database = new SQLiteAsyncConnection(dbPath);
         }
-
-
 
         public async Task InitializeDatabaseAsync()
         {
             await _database.CreateTableAsync<Product>();
             await _database.CreateTableAsync<Stock>();
             await _database.CreateTableAsync<AppSettings>();
+
+            // Create tables for FoodGroup and FoodType
+            await _database.CreateTableAsync<FoodGroup>();
+            await _database.CreateTableAsync<FoodType>();
+
+            // Seed default Food Groups and Food Types if none exist
+            await SeedDefaultFoodGroupsAsync(); // Activates the adding of default FoodGrooups and FoodTypes (Function lower on page)
         }
 
 
 
-        // AppSettings Methods
+        // AppSettings Methods ------------------------------------------------------------------------------------
 
         // Retrieves the AppSettings from the database. If no record exists, initializes default settings
         public async Task<AppSettings> GetAppSettingsAsync()
@@ -69,10 +76,12 @@ namespace FoodBuddy.Services
             }
         }
 
+        // END -------------------------------------------------------------------------------------
 
 
 
-        // Product Methods
+
+        // Product Methods -------------------------------------------------------------------------------------
 
         // Retrieve a list of all products from the Product table
         public Task<List<Product>> GetProductsAsync()
@@ -105,11 +114,11 @@ namespace FoodBuddy.Services
             return _database.DeleteAsync(product); // Delete Product from the table
         }
 
+        // END -------------------------------------------------------------------------------------
 
 
 
-
-        // Stock Methods
+        // Stock Methods -------------------------------------------------------------------------------------
 
         // Retrieve a list of all stock items and link each stock to its corresponding Product
         public async Task<List<Stock>> GetStockAsync()
@@ -156,5 +165,97 @@ namespace FoodBuddy.Services
         {
             return _database.DeleteAsync(stock); // Delete Stock from the table
         }
+
+        // END -------------------------------------------------------------------------------------
+
+
+
+
+
+        // FOOD GROUPS / FOOD TYPES & DEFAULT DATABASE -------------------------------------------------------------------------------------
+
+        // Seed default food groups and types into the database
+        private async Task SeedDefaultFoodGroupsAsync()
+        {
+            // Check if there are no FoodGroup entries
+            var foodGroupCount = await _database.Table<FoodGroup>().CountAsync();
+            if (foodGroupCount == 0)
+            {
+                // Create default food groups and types
+                var defaultFoodGroups = new List<FoodGroup>
+        {
+            new() {
+                Name = "Meat",
+                FoodTypes =    // Simplified new expression
+                {
+                    new() { Name = "Beef" },
+                    new() { Name = "Lamb" },
+                    new() { Name = "Pork" }
+                }
+            },
+            new() {
+                Name = "Dairy",
+                FoodTypes =   // Simplified new expression
+                {
+                    new() { Name = "Milk" },
+                    new() { Name = "Cheese" },
+                    new() { Name = "Yoghurt" }
+                }
+            },
+            new() {
+                Name = "Poultry",
+                FoodTypes = // Simplified new expression
+                {
+                    new() { Name = "Chicken" },
+                    new() { Name = "Eggs" }
+                }
+            }
+        };
+
+                // Insert food groups and food types into the database on initialization
+                foreach (var foodGroup in defaultFoodGroups)
+                {
+                    await _database.InsertAsync(foodGroup); // Insert food group
+
+                    // Insert related food types
+                    foreach (var foodType in foodGroup.FoodTypes)
+                    {
+                        foodType.FoodGroupId = foodGroup.Id; // Set foreign key
+                        await _database.InsertAsync(foodType);
+                    }
+                }
+            }
+        }
+
+        // Add methods to retrieve and interact with food groups and food types
+        public Task<List<FoodGroup>> GetFoodGroupsAsync()
+        {
+            var foodGroups = _database.Table<FoodGroup>().ToListAsync();
+            Console.WriteLine($"Database returned {foodGroups.Result.Count} Food Groups.");
+            return foodGroups;
+        }
+
+        public Task<List<FoodType>> GetFoodTypesByGroupAsync(int foodGroupId)
+        {
+            return _database.Table<FoodType>().Where(ft => ft.FoodGroupId == foodGroupId).ToListAsync();
+        }
+
+
+        // Save a new Food Group to the database
+        public Task<int> SaveFoodGroupAsync(FoodGroup foodGroup)
+        {
+            if (foodGroup.Id != 0)
+            {
+                return _database.UpdateAsync(foodGroup); // Update existing FoodGroup
+            }
+            else
+            {
+                return _database.InsertAsync(foodGroup); // Insert new FoodGroup
+            }
+        }
+
+        // FOOD GROUPS / FOOD TYPES END-------------------------------------------------------------------------------------
+
+
     }
 }

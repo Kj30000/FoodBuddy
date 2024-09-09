@@ -6,14 +6,9 @@ namespace FoodBuddy.Pages
 {
     public partial class AddProductForm : ContentPage
     {
-        // Default food groups
-        private readonly List<string> defaultFoodGroups = new List<string>
-        {
-            "Vegetables", "Fruits", "Meat", "Dairy", "Grains", "Beverages", "Add New"  // "Add New" added here
-        };
 
         // Use ObservableCollection for dynamic updates
-        public ObservableCollection<string> AllFoodGroups { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<FoodGroup> AllFoodGroups { get; set; } = new ObservableCollection<FoodGroup>();
 
         public AddProductForm()
         {
@@ -22,37 +17,35 @@ namespace FoodBuddy.Pages
             BindingContext = this;  // Set BindingContext to use data binding
         }
 
-        // Load food groups from the database and combine with default ones
+
+        // Load food groups from the FoodGroup table in the database
         private async void LoadFoodGroupsFromDatabase()
         {
-            var products = await App.Database.GetProductsAsync();
-            var foodGroupsFromDatabase = products.Select(p => p.FoodGroup).Distinct();
+            Console.WriteLine("Loading Food Groups...");
 
-            // Combine default and database food groups, excluding "Add New" for now
-            var combinedGroups = defaultFoodGroups
-                .Where(fg => fg != "Add New") // Exclude "Add New" from initial sort
-                .Concat(foodGroupsFromDatabase)
-                .Distinct()
-                .OrderBy(fg => fg) // Sort alphabetically
-                .ToList();
+            var foodGroups = await App.Database.GetFoodGroupsAsync();
+            Console.WriteLine($"Found {foodGroups.Count} food groups.");
 
-            // Add "Add New" to the end of the list
-            combinedGroups.Add("Add New");
-
-            // Clear existing items and add new sorted ones
+            // Clear existing items and add new sorted ones from the database
             AllFoodGroups.Clear();
-            foreach (var group in combinedGroups)
+            foreach (var group in foodGroups.OrderBy(g => g.Name))
             {
                 AllFoodGroups.Add(group);
+                Console.WriteLine($"Added Food Group: {group.Name}");
             }
+
+            // Add the "Add New" option to the list
+            AllFoodGroups.Add(new FoodGroup { Name = "Add New" });
         }
+
+
 
         // Handle Picker selection
         private void OnFoodGroupSelected(object sender, EventArgs e)
         {
-            var selectedFoodGroup = FoodGroupPicker.SelectedItem as string;
+            var selectedFoodGroup = FoodGroupPicker.SelectedItem as FoodGroup;
 
-            if (selectedFoodGroup == "Add New")
+            if (selectedFoodGroup?.Name == "Add New")
             {
                 CustomFoodGroupEntry.IsVisible = true;  // Show custom entry
             }
@@ -65,19 +58,34 @@ namespace FoodBuddy.Pages
         private async void OnAddProductClicked(object sender, EventArgs e)
         {
             string productName = ProductNameEntry.Text;
-            string foodGroup = FoodGroupPicker.SelectedItem as string;
+            var selectedFoodGroup = FoodGroupPicker.SelectedItem as FoodGroup;
+            string foodGroupName = selectedFoodGroup?.Name;
 
-            // If "Add New" is selected, use the value from the custom entry field
-            if (foodGroup == "Add New")
+            // If "Add New" is selected, create a new FoodGroup entry
+            if (foodGroupName == "Add New")
             {
-                foodGroup = CustomFoodGroupEntry.Text;  // Use custom food group
+                foodGroupName = CustomFoodGroupEntry.Text;
+
+                if (!string.IsNullOrWhiteSpace(foodGroupName))
+                {
+                    var newFoodGroup = new FoodGroup { Name = foodGroupName };
+                    await App.Database.SaveFoodGroupAsync(newFoodGroup);  // Save new food group to the database
+
+                    // Reload the food groups to include the newly added one
+                    LoadFoodGroupsFromDatabase();
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Please enter a valid Food Group name.", "OK");
+                    return;
+                }
             }
 
-            string foodType = FoodTypeEntry.Text;
+            string foodType = FoodTypeEntry.Text;  // For now, we'll keep this simple.
             bool packageType = PrepackagedRadioButton.IsChecked;
             bool quantityType = MlRadioButton.IsChecked;
 
-            if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(foodGroup) || string.IsNullOrWhiteSpace(foodType))
+            if (string.IsNullOrWhiteSpace(productName) || string.IsNullOrWhiteSpace(foodGroupName) || string.IsNullOrWhiteSpace(foodType))
             {
                 await DisplayAlert("Missing Information", "Please fill out all fields.", "OK");
                 return;
@@ -100,7 +108,7 @@ namespace FoodBuddy.Pages
             var newProduct = new Product
             {
                 ProductName = productName,
-                FoodGroup = foodGroup,
+                FoodGroup = foodGroupName,
                 FoodType = foodType,
                 PackageType = packageType,
                 QuantityType = quantityType,
@@ -111,6 +119,7 @@ namespace FoodBuddy.Pages
             var result = await App.Database.SaveProductAsync(newProduct);
             Console.WriteLine($"Product saved with result: {result}");
 
+            // Refresh the product list if MyProductsPage is available
             if (Application.Current?.MainPage is NavigationPage navigationPage && navigationPage.RootPage is MyProductsPage myProductsPage)
             {
                 myProductsPage?.RefreshProductList();
