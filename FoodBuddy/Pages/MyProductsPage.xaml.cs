@@ -78,7 +78,14 @@ namespace FoodBuddy.Pages
             await Navigation.PushAsync(new ProductDetailPage(product));
         }
 
-        //Handle product list refresh when a product is deleted
+        // This method is called when the page becomes visible. To then run the RefreshProductList - So products listes are always updtodate. 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            RefreshProductList();
+        }
+
+        //Handle product list refresh when a product is added or deleted. Is call from OnAppearing method from this code + other areas TBD (I believe when deleting)
         public void RefreshProductList()
         {
             FoodGroups.Clear();
